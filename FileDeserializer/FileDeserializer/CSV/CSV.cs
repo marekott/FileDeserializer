@@ -10,7 +10,6 @@ namespace FileDeserializer.CSV
 		private readonly string _path;
 		private readonly char _separator;
 
-		//TODO zabezpieczenie przed błędną lokalizacją pliku
 		//TODO inne konstruktory
 		public Csv(string path, char separator)
 		{
@@ -18,28 +17,17 @@ namespace FileDeserializer.CSV
 			_separator = separator;
 		}
 
-		//TODO refaktor metody
+		/// <summary>
+		///Generic method which deserialize specific Csv for one-dimensional array. Use when file has only one row or you don't need data split by columns.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <returns>T[]</returns>
 		public T[] Deserialize<T>()
 		{
-			var stringArray = ReadWholeFile().Split(_separator);
-			T[] oneDimensionalArray = new T[stringArray.Length];
+			var stringArray = ReadWholeFile().Split(_separator);	
+			var oneDimensionalArray = ConvertToProvidedType<T>(stringArray, typeof(T));
 
-			var providedType = typeof(T);
-
-			try
-			{
-				for (int i = 0; i < oneDimensionalArray.Length; i++)
-				{
-					oneDimensionalArray[i] = (T)Convert.ChangeType(stringArray[i], providedType);
-				}
-
-				return oneDimensionalArray;
-			}
-
-			catch (FormatException)
-			{
-				throw new FormatException("Unable to cast value from file for pointed type. Check if you are not trying to cast string for number type.");
-			}
+			return oneDimensionalArray;
 		}
 
 		private string ReadWholeFile()
@@ -51,9 +39,34 @@ namespace FileDeserializer.CSV
 				return wholeFile;
 			}
 		}
+		//TODO nie da się tej metody rozbić?
+		private static T[] ConvertToProvidedType<T>(string[] stringArray, Type type)
+		{
+			var oneDimensionalArray = new T[stringArray.Length];
 
-		//TODO czy na pewno musi zwracać zawsze string[,] a nie może być generyczna[,]
-		public string[,] DeserializeByRows(bool skipHeaders = false)
+			try
+			{
+				for (int i = 0; i < oneDimensionalArray.Length; i++)
+				{
+					oneDimensionalArray[i] = (T)Convert.ChangeType(stringArray[i], type);
+				}
+
+				return oneDimensionalArray;
+			}
+
+			catch (FormatException formatEx)
+			{
+				throw new FormatException($"Unable to cast value from file for pointed type. Check if you are not trying to cast string for numeral type. {formatEx.StackTrace}");
+			}
+		}
+
+		/// <summary>
+		/// Generic method which deserialize specific Csv for two-dimensional array. Pass string typeparam if you would like to keep headers which are different than numeric.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="skipHeaders">Choose if headers should be omitted.</param>
+		/// <returns>T[,]</returns>
+		public T[,] DeserializeByRows<T>(bool skipHeaders = false)
 		{
 			var listWithRows = ReadWholeFileByRows();
 			var listWithValues = listWithRows.SplitBy(_separator);
@@ -62,7 +75,7 @@ namespace FileDeserializer.CSV
 				listWithValues.SkipHeaders();
 			}
 
-			var twoDimensionalArray = listWithValues.ConvertToTwoDimensionalArray();
+			var twoDimensionalArray = ConvertToTwoDimensionalArray<T>(listWithValues, typeof(T));
 
 			return twoDimensionalArray;
 		}
@@ -79,6 +92,29 @@ namespace FileDeserializer.CSV
 				}
 
 				return listWithRows;
+			}
+		}
+
+		private T[,] ConvertToTwoDimensionalArray<T>(List<List<string>> list, Type type)
+		{
+			var twoDimensionalArray = new T[list.Count, list[0].Count];
+
+			try
+			{
+				for (int i = 0; i < twoDimensionalArray.GetLength(0); i++)
+				{
+					for (int j = 0; j < twoDimensionalArray.GetLength(1); j++)
+					{
+						twoDimensionalArray[i, j] = (T)Convert.ChangeType(list[i][j], type);
+					}
+				}
+
+				return twoDimensionalArray;
+			}
+
+			catch (FormatException formatEx)
+			{
+				throw new FormatException($"Unable to cast value from file for pointed type. Check if you are not trying to cast string for numeral type. {formatEx.StackTrace}");
 			}
 		}
 	}
@@ -101,21 +137,5 @@ namespace FileDeserializer.CSV
 
 			return listWithValues;
 		}
-
-		public static T[,] ConvertToTwoDimensionalArray<T>(this List<List<T>> list)
-		{
-			var twoDimensionalArray = new T[list.Count, list[0].Count];
-
-			for (int i = 0; i < twoDimensionalArray.GetLength(0); i++)
-			{
-				for (int j = 0; j < twoDimensionalArray.GetLength(1); j++)
-				{
-					twoDimensionalArray[i, j] = list[i][j];
-				}
-			}
-
-			return twoDimensionalArray;
-		}
-
 	}
 }
