@@ -64,13 +64,22 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CSV\CsvTests.cs" />
+    <Compile Include="CSV\MockFiles\MokFileLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="CSV\MokFiles\CsvWithString.csv" />
-    <None Include="CSV\MokFiles\CsvWithTwoRows.csv" />
-    <None Include="CSV\MokFiles\CsvWithTwoRowsAndHeaders.csv" />
-    <None Include="CSV\MokFiles\CsvWithOneRow.csv" />
+    <None Include="CSV\MockFiles\CsvWithString.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="CSV\MockFiles\CsvWithTwoRows.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="CSV\MockFiles\CsvWithOneRow.csv">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

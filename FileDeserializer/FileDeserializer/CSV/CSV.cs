@@ -10,10 +10,15 @@ namespace FileDeserializer.CSV
 		private readonly string _path;
 		private readonly char _separator;
 
-		//TODO inne konstruktory
 		public Csv(string path, char separator)
 		{
 			_path = path;
+			_separator = separator;
+		}
+
+		public Csv(IFileLocator fileLocator, char separator)
+		{
+			_path = fileLocator.GetFileLocation();
 			_separator = separator;
 		}
 
@@ -39,7 +44,7 @@ namespace FileDeserializer.CSV
 				return wholeFile;
 			}
 		}
-		//TODO nie da się tej metody rozbić?
+
 		private static T[] ConvertToProvidedType<T>(string[] stringArray, Type type)
 		{
 			var oneDimensionalArray = new T[stringArray.Length];

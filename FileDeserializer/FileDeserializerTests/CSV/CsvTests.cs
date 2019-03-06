@@ -2,6 +2,7 @@
 using System.IO;
 using Xunit;
 using FileDeserializer.CSV;
+using FileDeserializerTests.CSV.MockFiles;
 
 namespace FileDeserializerTests.CSV
 {
@@ -12,7 +13,7 @@ namespace FileDeserializerTests.CSV
 		{
 			int[] expected = {1, 1, 1, 1};
 
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithOneRow.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithOneRow.csv", ';');
 
 			var actual = csv.Deserialize<int>();
 
@@ -24,7 +25,7 @@ namespace FileDeserializerTests.CSV
 		{
 			string[] expected = { "1", "1", "1", "1" };
 
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithOneRow.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithOneRow.csv", ';');
 
 			var actual = csv.Deserialize<string>();
 
@@ -44,7 +45,7 @@ namespace FileDeserializerTests.CSV
 			expected[1, 2] = 2;
 			expected[1, 3] = 2;
 
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithTwoRows.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithTwoRows.csv", ';');
 
 			var actual = csv.DeserializeByRows<int>();
 
@@ -68,7 +69,7 @@ namespace FileDeserializerTests.CSV
 			expected[2, 2] = "2";
 			expected[2, 3] = "2";
 
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithTwoRowsAndHeaders.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv", ';');
 
 			var actual = csv.DeserializeByRows<string>();
 
@@ -88,7 +89,7 @@ namespace FileDeserializerTests.CSV
 			expected[1, 2] = 2;
 			expected[1, 3] = 2;
 
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithTwoRowsAndHeaders.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv", ';');
 
 			var actual = csv.DeserializeByRows<int>(true);
 
@@ -98,7 +99,7 @@ namespace FileDeserializerTests.CSV
 		[Fact()]
 		public void DeserializeCsvWasFormatExceptionThrown()
 		{
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithString.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithString.csv", ';');
 
 			Assert.Throws<FormatException>(() => csv.Deserialize<int>());
 		}
@@ -106,7 +107,7 @@ namespace FileDeserializerTests.CSV
 		[Fact()]
 		public void DeserializeCsvWithHeaderToIntWasFormatExceptionThrown()
 		{
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithTwoRowsAndHeaders.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv", ';');
 
 			Assert.Throws<FormatException>(() => csv.DeserializeByRows<int>());
 		}
@@ -114,9 +115,17 @@ namespace FileDeserializerTests.CSV
 		[Fact()]
 		public void WasFileNotFoundExceptionThrown()
 		{
-			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MokFiles\CsvWithStringiiixdxdxd.csv", ';');
+			Csv csv = new Csv(@"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithStringiiixdxdxd.csv", ';');
 
 			Assert.Throws<FileNotFoundException>(() => csv.Deserialize<int>());
+		}
+
+		[Fact()]
+		public void ConstructorWithOnlyFileNameTest()
+		{
+			Csv csv = new Csv(new MokFileLocator(@"CSV\MockFiles\CsvWithString.csv"), ';');
+
+			csv.Deserialize<string>();
 		}
 	}
 }
