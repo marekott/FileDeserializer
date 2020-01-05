@@ -2,27 +2,27 @@
 using System.IO;
 using Xunit;
 using FileDeserializer.CSV;
-using FileDeserializerTests.CSV.MockFiles;
 
 namespace FileDeserializerTests.CSV
 {
 	public class CsvTests
-	{
-		private const string CsvOneRowPath = @"CSV\MockFiles\CsvWithOneRow.csv";
-		private const string CsvTwoRowsPath = @"CSV\MockFiles\CsvWithTwoRows.csv";
-		private const string CsvTwoRowsAndHeadersPath = @"CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv";
-		private const string CsvWithStringPath = @"CSV\MockFiles\CsvWithString.csv";
-		private const char PolishCsvSeparator = ';';
+    {
+        private static readonly string CurrentDirectory = new DirectoryInfo(Directory.GetCurrentDirectory()).FullName;
+        private static readonly string CsvOneRowPath = CurrentDirectory + @"\CSV\MockFiles\CsvWithOneRow.csv";
+        private static readonly string CsvTwoRowsPath = CurrentDirectory + @"\CSV\MockFiles\CsvWithTwoRows.csv";
+        private static readonly string CsvTwoRowsAndHeadersPath = CurrentDirectory + @"\CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv";
+        private static readonly string CsvWithStringPath = CurrentDirectory + @"\CSV\MockFiles\CsvWithString.csv";
+        private const char PolishCsvSeparator = ';';
 
 		[Fact]
 		public void DeserializeCsvWithOneRowToOneDimensionalArrayOfIntTest()
 		{
 			// Arrange
 			int[] expected = {1, 1, 1, 1};
-            var csv = new Csv(new MokFileLocator(CsvOneRowPath), PolishCsvSeparator);
+			var csvConverter = new CsvConverter();
 
 			// Act
-			var actual = csv.Deserialize<int>();
+			var actual = csvConverter.Deserialize<int>(CsvOneRowPath, PolishCsvSeparator);
 
 			// Assert
 			Assert.Equal(expected, actual);
@@ -33,10 +33,10 @@ namespace FileDeserializerTests.CSV
 		{
             // Arrange
 			string[] expected = { "1", "1", "1", "1" };
-            var csv = new Csv(new MokFileLocator(CsvOneRowPath), PolishCsvSeparator);
+            var csvConverter = new CsvConverter();
 
-            // Act
-			var actual = csv.Deserialize<string>();
+			// Act
+			var actual = csvConverter.Deserialize<string>(CsvOneRowPath, PolishCsvSeparator);
 
             // Assert
 			Assert.Equal(expected, actual);
@@ -55,10 +55,10 @@ namespace FileDeserializerTests.CSV
 			expected[1, 1] = 2;
 			expected[1, 2] = 2;
 			expected[1, 3] = 2;
-            var csv = new Csv(new MokFileLocator(CsvTwoRowsPath), PolishCsvSeparator);
+            var csvConverter = new CsvConverter();
 
-            // Act
-			var actual = csv.DeserializeByRows<int>();
+			// Act
+			var actual = csvConverter.DeserializeByRows<int>(CsvTwoRowsPath, PolishCsvSeparator);
 
             // Assert
 			Assert.Equal(expected, actual);
@@ -81,10 +81,10 @@ namespace FileDeserializerTests.CSV
 			expected[2, 1] = "2";
 			expected[2, 2] = "2";
 			expected[2, 3] = "2";
-            var csv = new Csv(new MokFileLocator(CsvTwoRowsAndHeadersPath), PolishCsvSeparator);
+            var csvConverter = new CsvConverter();
 
-            // Act
-			var actual = csv.DeserializeByRows<string>();
+			// Act
+			var actual = csvConverter.DeserializeByRows<string>(CsvTwoRowsAndHeadersPath, PolishCsvSeparator);
 
             // Assert
 			Assert.Equal(expected, actual);
@@ -103,10 +103,10 @@ namespace FileDeserializerTests.CSV
 			expected[1, 1] = 2;
 			expected[1, 2] = 2;
 			expected[1, 3] = 2;
-            var csv = new Csv(new MokFileLocator(CsvTwoRowsAndHeadersPath), PolishCsvSeparator);
+            var csvConverter = new CsvConverter();
 
-            // Act
-			var actual = csv.DeserializeByRows<int>(true);
+			// Act
+			var actual = csvConverter.DeserializeByRows<int>(CsvTwoRowsAndHeadersPath, PolishCsvSeparator, true);
 
             // Assert
 			Assert.Equal(expected, actual);
@@ -115,48 +115,34 @@ namespace FileDeserializerTests.CSV
 		[Fact]
 		public void DeserializeCsvOfStringToIntHasFormatExceptionBeenThrownTest()
 		{
-            // Arrange
-			var csv = new Csv(new MokFileLocator(CsvWithStringPath), PolishCsvSeparator);
+			// Arrange
+			var csvConverter = new CsvConverter();
 
 			// Act
-            // Assert
-			Assert.Throws<FormatException>(() => csv.Deserialize<int>());
+			// Assert
+			Assert.Throws<FormatException>(() => csvConverter.Deserialize<int>(CsvWithStringPath, PolishCsvSeparator));
 		}
 
 		[Fact]
 		public void DeserializeCsvWithHeaderToIntHasFormatExceptionBeenThrownTest()
 		{
             // Arrange
-			var csv = new Csv(new MokFileLocator(CsvTwoRowsAndHeadersPath), PolishCsvSeparator);
+			var csvConverter = new CsvConverter();
 
-            // Act
-            // Assert
-			Assert.Throws<FormatException>(() => csv.DeserializeByRows<int>());
+			// Act
+			// Assert
+			Assert.Throws<FormatException>(() => csvConverter.DeserializeByRows<int>(CsvTwoRowsAndHeadersPath, PolishCsvSeparator));
 		}
 
 		[Fact]
 		public void DeserializeCsvWrongFilePathHasFileNotFoundExceptionBeenThrownTest()
 		{
             // Arrange
-			var csv = new Csv(new MokFileLocator(@"CSV\MockFiles\CsvWithStringiiixdxdxd.csv"), PolishCsvSeparator);
+			var csvConverter = new CsvConverter();
 
-            // Act
-            // Assert
-			Assert.Throws<FileNotFoundException>(() => csv.Deserialize<int>());
+			// Act
+			// Assert
+			Assert.Throws<FileNotFoundException>(() => csvConverter.Deserialize<int>(CurrentDirectory + @"\CSV\MockFiles\CsvWithStringiiixdxdxd.csv", PolishCsvSeparator));
 		}
-
-        [Fact]
-        public void ConstructorWithAbsolutePathTest()
-        {
-            // Arrange
-			var currentDirectory = Directory.GetCurrentDirectory();
-            var directory = new DirectoryInfo(currentDirectory);
-            var absolutePath = directory.FullName + @"\CSV\MockFiles\CsvWithString.csv";
-            var csv = new Csv(absolutePath, PolishCsvSeparator);
-
-            // Act
-			csv.Deserialize<string>();
-        }
-
-	}
+    }
 }

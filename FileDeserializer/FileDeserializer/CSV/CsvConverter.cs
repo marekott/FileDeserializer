@@ -5,39 +5,26 @@ using System.Linq;
 
 namespace FileDeserializer.CSV
 {
-	public class Csv
-	{
-		private readonly string _path;
-		private readonly char _separator;
-
-		public Csv(string path, char separator)
-		{
-			_path = path;
-			_separator = separator;
-		}
-
-		public Csv(IFileLocator fileLocator, char separator)
-		{
-			_path = fileLocator.GetFileLocation();
-			_separator = separator;
-		}
-
+	public class CsvConverter : ICsvConverter
+    {
 		/// <summary>
-		///Generic method which deserialize specific Csv for one-dimensional array. Use when file has only one row or you don't need data split by columns.
+		/// Generic method which deserialize specific Csv for one-dimensional array. Use when file has only one row or you don't need data split by columns.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
-		/// <returns>T[]</returns>
-		public T[] Deserialize<T>()
+		/// <param name="path">Absolute path to file</param>
+		/// <param name="separator">Separator by which file will be spitted</param>
+		/// <returns></returns>
+		public T[] Deserialize<T>(string path, char separator)
 		{
-			var stringArray = ReadWholeFile().Split(_separator);	
+			var stringArray = ReadWholeFile(path).Split(separator);	
 			var oneDimensionalArray = ConvertToProvidedType<T>(stringArray, typeof(T));
 
 			return oneDimensionalArray;
 		}
 
-		private string ReadWholeFile()
+		private string ReadWholeFile(string path)
 		{
-			using (var reader = new StreamReader(_path))
+			using (var reader = new StreamReader(path))
 			{
 				var wholeFile = reader.ReadToEnd();
 
@@ -66,15 +53,17 @@ namespace FileDeserializer.CSV
 		}
 
 		/// <summary>
-		/// Generic method which deserialize specific Csv for two-dimensional array. Pass string typeparam if you would like to keep headers which are different than numeric.
+		/// Generic method which deserialize specific Csv for two-dimensional array. Deserialize to string if you would like to keep headers which are different than numeric.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
+		/// <param name="path">Absolute path to file</param>
+		/// <param name="separator">Separator by which file will be spitted</param>
 		/// <param name="skipHeaders">Choose if headers should be omitted.</param>
-		/// <returns>T[,]</returns>
-		public T[,] DeserializeByRows<T>(bool skipHeaders = false)
+		/// <returns></returns>
+		public T[,] DeserializeByRows<T>(string path, char separator, bool skipHeaders = false)
 		{
-			var listWithRows = ReadWholeFileByRows();
-			var listWithValues = listWithRows.SplitBy(_separator);
+			var listWithRows = ReadWholeFileByRows(path);
+			var listWithValues = listWithRows.SplitBy(separator);
 			if (skipHeaders)
 			{
 				listWithValues.SkipHeaders();
@@ -85,11 +74,11 @@ namespace FileDeserializer.CSV
 			return twoDimensionalArray;
 		}
 
-		private List<string> ReadWholeFileByRows()
+		private List<string> ReadWholeFileByRows(string path)
 		{
 			var listWithRows = new List<string>();
 
-			using (var reader = new StreamReader(_path))
+			using (var reader = new StreamReader(path))
 			{
 				while (!reader.EndOfStream)
 				{

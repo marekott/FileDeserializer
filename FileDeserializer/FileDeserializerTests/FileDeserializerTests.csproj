@@ -64,7 +64,6 @@
   </Choose>
   <ItemGroup>
     <Compile Include="CSV\CsvTests.cs" />
-    <Compile Include="CSV\MockFiles\MokFileLocator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
