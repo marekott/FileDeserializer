@@ -12,7 +12,6 @@ namespace FileDeserializerTests.CSV
 		private const string CsvTwoRowsPath = @"CSV\MockFiles\CsvWithTwoRows.csv";
 		private const string CsvTwoRowsAndHeadersPath = @"CSV\MockFiles\CsvWithTwoRowsAndHeaders.csv";
 		private const string CsvWithStringPath = @"CSV\MockFiles\CsvWithString.csv";
-		private const string CsvWithStringAbsolutePath = @"F:\Informatyka\C#\Projekty1.0\FileDeserializer\FileDeserializer\FileDeserializerTests\CSV\MockFiles\CsvWithString.csv";
 		private const char PolishCsvSeparator = ';';
 
 		[Fact()]
@@ -127,12 +126,5 @@ namespace FileDeserializerTests.CSV
 			Assert.Throws<FileNotFoundException>(() => csv.Deserialize<int>());
 		}
 
-		[Fact()]
-		public void ConstructorWithAbsolutePathTest() //Check URL in constructor if you are running it on your computer
-		{
-			Csv csv = new Csv(CsvWithStringAbsolutePath, PolishCsvSeparator);
-
-			csv.Deserialize<string>();
-		}
 	}
 }
