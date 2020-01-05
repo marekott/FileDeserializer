@@ -2,5 +2,13 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <Authors>Marek Ott</Authors>
+    <RepositoryUrl>https://github.com/marekott/FileDeserializer</RepositoryUrl>
+    <PackageTags>csv csv-converter csv-reading io helpers</PackageTags>
+    <PackageReleaseNotes>This is the initial release</PackageReleaseNotes>
+    <PackageProjectUrl>https://github.com/marekott/FileDeserializer</PackageProjectUrl>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
   </PropertyGroup>
 </Project>

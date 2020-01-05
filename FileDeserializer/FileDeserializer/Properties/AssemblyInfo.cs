@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("FileDeserializer")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("FileDeserializer is a library for .NET applications which will simplify reading and writing to files. Written with .NET Standard 2.0, can be used both with .NET Framework and .NET Core.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FileDeserializer")]
+[assembly: AssemblyCompany("Marek Ott")]
+[assembly: AssemblyProduct("File Deserializer")]
 [assembly: AssemblyCopyright("Copyright ©  2019")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
